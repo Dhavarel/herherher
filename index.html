@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Prevent zoom on mobile tap -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Will You Be My Girlfriend?</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+            border: 8px solid transparent;
+            border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='10' cy='10' r='3' fill='%23ff416c'/%3E%3C/svg%3E") 20 repeat;
+        }
+        
+        .page {
+            padding: 40px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .active {
+            display: block;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: #d32f2f;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            color: #e91e63;
+            margin-bottom: 30px;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            touch-action: manipulation;
+        }
+        
+        .btn-yes {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+        }
+        
+        .btn-no {
+            background: linear-gradient(to right, #a18cd1, #fbc2eb);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-yes:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(255,65,108,0.4);
+            /* Optional: add gentle pulse */
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 6px 12px rgba(255,65,108,0.4); }
+            50% { box-shadow: 0 6px 18px rgba(255,65,108,0.6); }
+            100% { box-shadow: 0 6px 12px rgba(255,65,108,0.4); }
+        }
+
+        /* === Original photo frame (used on Page 1) === */
+        .photo-frame {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .photo-frame::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .photo-frame span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* === Page 2: Vertical list with labels above frames === */
+        .photo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin: 25px 0;
+            padding: 0 20px;
+        }
+
+        .photo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .photo-label {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #e91e63;
+            margin-bottom: 10px;
+            text-align: center;
+            max-width: 100%;
+        }
+
+        .photo-frame-item {
+            width: 100%;
+            max-width: 220px;
+            height: 140px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-frame-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .photo-frame-item span {
+            color: white;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        /* Page 3 styles */
+        .letter-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: left;
+            margin: 20px 0;
+            border-left: 4px solid #ff416c;
+        }
+        
+        .letter-container p {
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #333;
+            font-size: 1.15rem;
+            line-height: 1.7;
+        }
+        
+        .signature {
+            text-align: right;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #e91e63;
+            font-size: 1.2rem;
+        }
+        
+        /* Page 4 styles */
+        .proposal-text {
+            font-size: 1.8rem;
+            color: #d32f2f;
+            margin: 30px 0;
+            font-weight: bold;
+        }
+        
+        .btn-no-grow {
+            font-size: 1.2rem !important;
+            padding: 14px 32px !important;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #e91e63;
+        }
+        
+        .modal p {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+        }
+        
+        .sad-emoticon {
+            font-size: 3rem;
+            margin: 15px 0;
+            display: block;
+        }
+        
+        .hearts {
+            position: absolute;
+            font-size: 2rem;
+            color: #ff416c;
+            animation: float 6s infinite ease-in-out;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        /* === MOBILE-FIRST OPTIMIZATIONS === */
+        @media (max-width: 600px) {
+            .page {
+                padding: 30px 16px;
+            }
+            
+            h1 {
+                font-size: 2.3rem;
+                margin-bottom: 20px;
+            }
+            
+            h2 {
+                font-size: 1.9rem;
+                margin-bottom: 20px;
+            }
+            
+            p {
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+            }
+            
+            .btn {
+                padding: 16px 28px;
+                font-size: 1.25rem;
+                min-width: 140px;
+                min-height: 56px;
+            }
+            
+            .photo-frame {
+                width: 160px;
+                height: 160px;
+                border-radius: 16px;
+                font-size: 1rem;
+            }
+            
+            .photo-frame-item {
+                height: 120px;
+                max-width: 180px;
+                border-radius: 14px;
+            }
+            
+            .photo-label {
+                font-size: 1.2rem;
+                margin-bottom: 8px;
+            }
+            
+            .photo-list {
+                padding: 0 10px;
+                gap: 20px;
+            }
+            
+            .letter-container {
+                padding: 20px;
+                font-size: 1.05rem;
+                line-height: 1.6;
+            }
+            
+            .proposal-text {
+                font-size: 1.5rem;
+                margin: 20px 0;
+            }
+            
+            .modal-content {
+                padding: 24px;
+            }
+            
+            .modal p {
+                font-size: 1.2rem;
+            }
+            
+            .hearts {
+                font-size: 1.5rem !important;
+            }
+
+            /* Pulsing heart animation */
+            .pulsing-heart {
+                font-size: 4rem;
+                color: #ff416c;
+                animation: pulseHeart 2s infinite;
+                text-shadow: 0 2px 8px rgba(255, 65, 108, 0.3);
+                margin: 25px 0;
+            }
+
+            @keyframes pulseHeart {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.15); }
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts -->
+    <div class="hearts" style="top: 10%; left: 15%;">❤️</div>
+    <div class="hearts" style="top: 20%; left: 80%;">❤️</div>
+    <div class="hearts" style="top: 30%; left: 40%; font-size: 1.8rem; color: #fff5f7;">🤍</div>
+    <div class="hearts" style="top: 50%; left: 60%; font-size: 1.6rem; color: #ffebee;">🌸</div>
+    <div class="hearts" style="top: 60%; left: 75%;">❤️</div>
+    <div class="hearts" style="top: 80%; left: 25%;">❤️</div>
+    
+    <div class="container">
+        <audio id="loveSong">
+            <source src="song.mp3" type="audio/mpeg">
+        </audio>
+
+        <div id="musicBtn" style="display: none; position: absolute; top: 15px; right: 15px; font-size: 1.4rem; color: #e91e63; cursor: pointer; z-index: 20; background: rgba(255,255,255,0.8); width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            ❤️
+        </div>
+
+        <!-- Page 1: Initial Question -->
+        <div id="page1" class="page active">
+            <h1>Will You Open This, Farah?</h1>
+            
+            <!-- Centered photo frame -->
+            <div style="display: flex; justify-content: center; margin-bottom: 30px;">
+                <div style="
+                    width: 180px;
+                    height: 180px;
+                    border-radius: 18px;
+                    overflow: hidden;
+                    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                    margin: 0 auto 30px;
+                ">
+                    <img src="photo.jpg" alt="Us" style="
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        display: block;
+                    ">
+                </div>
+            </div>
+            
+                <div style="
+                    position: absolute;
+                    bottom: 8px;
+                    left: 10px;
+                    font-size: 1.1rem;
+                    color: white;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+                ">❤️</div>
+                <div style="
+                    position: absolute;
+                    bottom: 8px;
+                    right: 10px;
+                    font-size: 1.1rem;
+                    color: white;
+                    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+                ">💕</div>
+
+            <div class="btn-container">
+                <button class="btn btn-yes" onclick="showPage(2)">Okay</button>
+                <button class="btn btn-no" onclick="showRefusal()">Not yet...</button>
+            </div>
+        </div>
+        
+        <!-- Page 2: 5 Things I Love About You -->
+        <div id="page2" class="page">
+            <h2>5 Things I Love About You</h2>
+            
+            <div class="photo-list">
+                <div class="photo-item">
+                    <div class="photo-label">Your eyes</div>
+                    <div style="
+                        width: 100%;
+                        max-width: 220px;
+                        height: 140px;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                    ">
+                        <img src="photo1.jpg" alt="Your eyes" style="
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            display: block;
+                        ">
+                    </div>
+                </div>
+                <div class="photo-item">
+                    <div class="photo-label">The way you stare at me</div>
+                    <div style="
+                        width: 100%;
+                        max-width: 220px;
+                        height: 140px;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                    ">
+                        <img src="photo2.jpg" alt="Your eyes" style="
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            display: block;
+                        ">
+                    </div>
+                </div>
+                <div class="photo-item">
+                    <div class="photo-label">Your cheeks</div>
+                    <div style="
+                        width: 100%;
+                        max-width: 220px;
+                        height: 140px;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                    ">
+                        <img src="photo3.jpg" alt="Your eyes" style="
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            display: block;
+                        ">
+                    </div>
+                </div>
+                <div class="photo-item">
+                    <div class="photo-label">Your hands holding mine</div>
+                    <div style="
+                        width: 100%;
+                        max-width: 220px;
+                        height: 140px;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                    ">
+                        <img src="photo4.jpg" alt="Your eyes" style="
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            display: block;
+                        ">
+                    </div>
+                </div>
+                <div class="photo-item">
+                    <div class="photo-label">Just… you.</div>
+                    <div style="
+                        width: 100%;
+                        max-width: 220px;
+                        height: 140px;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+                    ">
+                        <img src="photo5.jpg" alt="Your eyes" style="
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                            display: block;
+                        ">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-yes" onclick="showPage(3)">Next</button>
+        </div>
+        
+        <!-- Page 3: Love Letter -->
+        <div id="page3" class="page">
+            <h2>A Letter For You, Bebe</h2>
+            <p style="font-size: 0.95rem; color: #e91e63; margin-top: -15px;">
+                Tap the ❤️ to hear our song...
+            </p>
+            <div class="letter-container">
+                <p>Farah Nabilah Az-zahra,</p>
+                <p>Remember that first time we texted? My heart shook and whispered, <em>"That’s her."</em> Your eyes could power a thousand suns… but all I need is the way they light up my world. And your laugh? Bebe, it’s my favorite song on repeat.</p>                <p>I love the way you listen like every word matters. I love how your eyes sparkle when you talk about things you care about. I love your quiet strength, your gentle kindness, and the way you make even ordinary moments feel magical.</p>
+                <p>Being with you feels like coming home. You inspire me to dream bigger, love deeper, and be the kind of person worthy of someone as incredible as you.</p>
+                <p>So today, with all my heart, I’m asking… will you walk this path with me?</p>
+                <div class="signature">Forever yours,<br>dhavarel</div>
+            </div>
+            <button class="btn btn-yes" onclick="showPage(4)">Next</button>
+        </div>
+        
+    <!-- Page 4: Final Proposal -->
+    <div id="page4" class="page">
+        <h2>Stay with me farah?</h2>
+        <div class="proposal-text">Forever and always?</div>
+        <div class="pulsing-heart">❤️</div>
+        <div class="btn-container" id="finalBtnContainer">
+            <button class="btn btn-yes" onclick="acceptProposal()">Yes</button>
+            <button id="noBtn" class="btn btn-no" onclick="rejectProposal()">No</button>
+        </div>
+    </div>
+    
+    <!-- Refusal Modal -->
+    <div id="refusalModal" class="modal">
+        <div class="modal-content">
+            <h2>no bebeee...</h2>
+            <p>please...? just one look for me? 😢</p>
+            <span class="sad-emoticon">😞</span>
+            <button class="btn btn-yes" onclick="closeRefusalModal()">okay, gue buka</button>
+        </div>
+    </div>
+    
+    <!-- Acceptance Modal -->
+    <div id="acceptanceModal" class="modal">
+        <div class="modal-content">
+            <h2>Yeay! You accepted me! ❤️</h2>
+            <p>I'm so happy! Ayo kita jalanin bareng!.</p>
+            <span class="sad-emoticon">😁</span>
+            <!-- Fixed WhatsApp link (removed extra spaces) -->
+            <a href="https://wa.me/?text=I%20will%20be%20your%20girlfriend,%20dhavarel!" target="_blank" class="btn btn-yes">Message me on WhatsApp</a>
+        </div>
+    </div>
+    
+    <script>
+        
+        function showPage(pageNumber) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show the requested page
+            document.getElementById(`page${pageNumber}`).classList.add('active');
+            
+            // Handle music button visibility
+            const musicBtn = document.getElementById('musicBtn');
+            const audio = document.getElementById('loveSong');
+            
+            if (pageNumber === 3) {
+                musicBtn.style.display = 'flex';
+            } else {
+                musicBtn.style.display = 'none';
+                audio.pause();
+            }
+        }
+
+        function showRefusal() {
+            document.getElementById('refusalModal').style.display = 'flex';
+        }
+        
+        function closeRefusalModal() {
+            document.getElementById('refusalModal').style.display = 'none';
+            showPage(2);
+        }
+        
+        let rejectionCount = 0;
+        const rejectionMessages = [
+            "No",
+            "Really Bebe?",
+            "Are you sure farah?",
+            "Pleeease? 😢",
+            "I'll be sad...",
+            "Just say yes, okay hun! ❤️"
+        ];
+
+        function rejectProposal() {
+            const noBtn = document.getElementById('noBtn');
+            const container = document.getElementById('finalBtnContainer');
+            
+            rejectionCount++;
+            
+            // Update button text
+            if (rejectionCount < rejectionMessages.length) {
+                noBtn.textContent = rejectionMessages[rejectionCount];
+            } else {
+                // After max clicks, replace "No" with "Okay, Yes!" 
+                noBtn.textContent = "Okay, Yes! ❤️";
+                noBtn.className = "btn btn-yes"; // Turn it into a YES button!
+                noBtn.onclick = acceptProposal;   // Now it triggers YES
+                return;
+            }
+            
+            // Make button bigger each time
+            const scale = 1 + (rejectionCount * 0.15); // Grows by 15% per click
+            noBtn.style.transform = `scale(${scale})`;
+            noBtn.style.padding = `${14 + rejectionCount * 4}px ${32 + rejectionCount * 6}px`;
+            noBtn.style.fontSize = `${1.2 + rejectionCount * 0.1}rem`;
+            
+            // Optional: Add gentle shake on click for extra playfulness
+            noBtn.style.animation = "none";
+            setTimeout(() => {
+                noBtn.style.animation = "shake 0.5s";
+            }, 10);
+        }
+        
+        function acceptProposal() {
+            document.getElementById('acceptanceModal').style.display = 'flex';
+            createConfetti();
+        }
+        
+        function createHearts() {
+            const container = document.body;
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'hearts';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.opacity = Math.random() * 0.5 + 0.3;
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 10000);
+            }
+        }
+        
+        setInterval(createHearts, 2000);
+        createHearts();
+
+        // Make ❤️ play/pause
+        document.getElementById('musicBtn').addEventListener('click', () => {
+            const audio = document.getElementById('loveSong');
+            const btn = document.getElementById('musicBtn');
+            
+            if (audio.paused) {
+                audio.volume = 0.5;
+                audio.play().catch(e => {
+                    alert("Please tap ❤️ again to play music!");
+                });
+                btn.innerHTML = '❤️';
+            } else {
+                audio.pause();
+                btn.innerHTML = '🤍';
+            }
+        });
+
+        function createConfetti() {
+            const colors = ['#ff416c', '#ff4b2b', '#ffd3e0', '#fbc2eb', '#ffafbd'];
+            const emojis = ['❤️', '💕', '💖', '💗', '🤍'];
+            const container = document.body;
+            
+            // Create 60 gentle confetti pieces
+            for (let i = 0; i < 60; i++) {
+                const confetti = document.createElement('div');
+                confetti.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                confetti.style.position = 'fixed';
+                confetti.style.fontSize = (Math.random() * 16 + 12) + 'px'; // 12-28px
+                confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-30px';
+                confetti.style.zIndex = '9999';
+                confetti.style.pointerEvents = 'none';
+                confetti.style.opacity = '0.95';
+                confetti.style.textShadow = '0 0 8px rgba(255,255,255,0.7)';
+                container.appendChild(confetti);
+                
+                // Animate falling with gentle sway
+                const duration = Math.random() * 4000 + 3000; // 3-7 seconds
+                const endX = (Math.random() - 0.5) * 200; // sway left/right
+                
+                confetti.animate([
+                    { transform: 'translate(0, 0) rotate(0deg)', opacity: 0.95 },
+                    { transform: `translate(${endX}px, ${window.innerHeight + 100}px) rotate(${Math.random() > 0.5 ? 360 : -360}deg)`, opacity: 0 }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.2, 0.8, 0.3, 1)' // smooth fall
+                });
+                
+                // Remove after animation
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, duration);
+            }
+        }
+
+    </script>
+</body>
+</html>
