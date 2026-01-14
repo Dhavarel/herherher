@@ -300,20 +300,39 @@
             display: block;
         }
         
-        .hearts {
-            position: absolute;
-            font-size: 2rem;
-            color: #ff416c;
-            animation: float 6s infinite ease-in-out;
+        /* Faster floating garden */
+        .floating-element {
+            position: fixed;
+            bottom: -50px;
+            font-size: 1.4rem;
+            opacity: 0.6;
             z-index: -1;
+            pointer-events: none;
+            animation: floatUp 8s infinite ease-out; /* Was 16s → now 8s! */
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
         }
-        
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-120vh) rotate(360deg);
+                opacity: 0;
+            }
         }
+
+        /* Faster layers */
+        .floating-element.near { animation-duration: 6s; opacity: 0.75; font-size: 1.8rem; }
+        .floating-element.mid { animation-duration: 8s; opacity: 0.6; font-size: 1.5rem; }
+        .floating-element.far { animation-duration: 10s; opacity: 0.4; font-size: 1.2rem; }
         
         /* === MOBILE-FIRST OPTIMIZATIONS === */
         @media (max-width: 600px) {
@@ -407,13 +426,7 @@
     </style>
 </head>
 <body>
-    <!-- Floating hearts -->
-    <div class="hearts" style="top: 10%; left: 15%;">❤️</div>
-    <div class="hearts" style="top: 20%; left: 80%;">❤️</div>
-    <div class="hearts" style="top: 30%; left: 40%; font-size: 1.8rem; color: #fff5f7;">🤍</div>
-    <div class="hearts" style="top: 50%; left: 60%; font-size: 1.6rem; color: #ffebee;">🌸</div>
-    <div class="hearts" style="top: 60%; left: 75%;">❤️</div>
-    <div class="hearts" style="top: 80%; left: 25%;">❤️</div>
+
     
     <div class="container">
         <audio id="loveSong">
@@ -694,24 +707,40 @@
             createConfetti();
         }
         
-        function createHearts() {
-            const container = document.body;
-            for (let i = 0; i < 15; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'hearts';
-                heart.innerHTML = '❤️';
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                heart.style.opacity = Math.random() * 0.5 + 0.3;
-                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
-                container.appendChild(heart);
-                
-                setTimeout(() => heart.remove(), 10000);
+        function createFloatingGarden() {
+            const emojis = ['❤️', '🤍', '🌸', '💕', '💗', '💮', '💖'];
+            const colors = ['#ff416c', '#ffffff', '#ffd3e0', '#ffafbd', '#ffc3a0'];
+            const layers = ['near', 'mid', 'far'];
+            
+            // Create 35 elements quickly at start
+            for (let i = 0; i < 35; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.className = `floating-element ${layers[Math.floor(Math.random() * layers.length)]}`;
+                    el.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    el.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    el.style.left = Math.random() * 100 + '%';
+                    el.style.animationDelay = Math.random() * 3 + 's'; // Shorter delay
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 12000); // Remove after 12s
+                }, i * 200); // Every 0.2s → faster buildup!
             }
+            
+            // Keep adding every 800ms (was 1200ms)
+            setInterval(() => {
+                const el = document.createElement('div');
+                el.className = `floating-element ${layers[Math.floor(Math.random() * layers.length)]}`;
+                el.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.color = colors[Math.floor(Math.random() * colors.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDuration = (Math.random() * 4 + 6) + 's'; // 6-10s
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 12000);
+            }, 800); // New element every 0.8 seconds → lively!
         }
-        
-        setInterval(createHearts, 2000);
-        createHearts();
+
+        // Start the garden
+        createFloatingGarden();
 
         // Make ❤️ play/pause
         document.getElementById('musicBtn').addEventListener('click', () => {
