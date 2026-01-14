@@ -300,16 +300,22 @@
             display: block;
         }
         
-        /* Faster floating garden */
+        /* Ultra-visible floating garden */
         .floating-element {
             position: fixed;
-            bottom: -50px;
-            font-size: 1.4rem;
-            opacity: 0.6;
+            bottom: -40px;
+            font-size: 2rem;
+            opacity: 0.95; /* Almost solid! */
             z-index: -1;
             pointer-events: none;
-            animation: floatUp 8s infinite ease-out; /* Was 16s → now 8s! */
-            text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+            animation: floatUp 9s infinite ease-out;
+            /* Strong glow that works on pink background */
+            text-shadow: 
+                0 0 8px rgba(255, 255, 255, 1),
+                0 0 16px rgba(255, 255, 255, 0.8),
+                0 0 24px rgba(255, 65, 108, 0.6);
+            /* Makes white hearts bright, pink hearts vibrant */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
         @keyframes floatUp {
@@ -317,22 +323,38 @@
                 transform: translateY(0) rotate(0deg);
                 opacity: 0;
             }
-            10% {
-                opacity: 0.6;
+            8% {
+                opacity: 0.95;
             }
-            90% {
-                opacity: 0.3;
+            92% {
+                opacity: 0.8;
             }
             100% {
-                transform: translateY(-120vh) rotate(360deg);
+                transform: translateY(-110vh) rotate(360deg);
                 opacity: 0;
             }
         }
 
-        /* Faster layers */
-        .floating-element.near { animation-duration: 6s; opacity: 0.75; font-size: 1.8rem; }
-        .floating-element.mid { animation-duration: 8s; opacity: 0.6; font-size: 1.5rem; }
-        .floating-element.far { animation-duration: 10s; opacity: 0.4; font-size: 1.2rem; }
+        /* Big, bold layers */
+        .floating-element.near { 
+            animation-duration: 6s; 
+            font-size: 2.6rem; 
+            opacity: 1;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 1),
+                0 0 20px rgba(255, 255, 255, 0.9),
+                0 0 30px rgba(255, 65, 108, 0.7);
+        }
+        .floating-element.mid { 
+            animation-duration: 9s; 
+            font-size: 2.2rem; 
+            opacity: 0.95;
+        }
+        .floating-element.far { 
+            animation-duration: 12s; 
+            font-size: 1.8rem; 
+            opacity: 0.9;
+        }
         
         /* === MOBILE-FIRST OPTIMIZATIONS === */
         @media (max-width: 600px) {
@@ -708,35 +730,35 @@
         }
         
         function createFloatingGarden() {
-            const emojis = ['❤️', '🤍', '🌸', '💕', '💗', '💮', '💖'];
-            const colors = ['#ff416c', '#ffffff', '#ffd3e0', '#ffafbd', '#ffc3a0'];
+            const emojis = ['❤️', '🤍', '🌸', '💕', '💗', '💖', '🌹'];
+            const colors = ['#ff416c', '#ffffff', '#ffafbd', '#ffd3e0', '#e91e63'];
             const layers = ['near', 'mid', 'far'];
             
-            // Create 35 elements quickly at start
-            for (let i = 0; i < 35; i++) {
+            // Create 50 big elements FAST at start
+            for (let i = 0; i < 50; i++) {
                 setTimeout(() => {
                     const el = document.createElement('div');
                     el.className = `floating-element ${layers[Math.floor(Math.random() * layers.length)]}`;
                     el.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
                     el.style.color = colors[Math.floor(Math.random() * colors.length)];
                     el.style.left = Math.random() * 100 + '%';
-                    el.style.animationDelay = Math.random() * 3 + 's'; // Shorter delay
+                    el.style.animationDelay = Math.random() * 1.5 + 's';
                     document.body.appendChild(el);
-                    setTimeout(() => el.remove(), 12000); // Remove after 12s
-                }, i * 200); // Every 0.2s → faster buildup!
+                    setTimeout(() => el.remove(), 13000);
+                }, i * 80); // Every 0.08s → thick & rich!
             }
             
-            // Keep adding every 800ms (was 1200ms)
+            // Keep adding every 600ms (dense flow)
             setInterval(() => {
                 const el = document.createElement('div');
                 el.className = `floating-element ${layers[Math.floor(Math.random() * layers.length)]}`;
                 el.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
                 el.style.color = colors[Math.floor(Math.random() * colors.length)];
                 el.style.left = Math.random() * 100 + '%';
-                el.style.animationDuration = (Math.random() * 4 + 6) + 's'; // 6-10s
+                el.style.animationDuration = (Math.random() * 6 + 6) + 's';
                 document.body.appendChild(el);
-                setTimeout(() => el.remove(), 12000);
-            }, 800); // New element every 0.8 seconds → lively!
+                setTimeout(() => el.remove(), 13000);
+            }, 600);
         }
 
         // Start the garden
