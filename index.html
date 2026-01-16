@@ -7,6 +7,128 @@
     <title>Will You Be My Girlfriend?</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+
+        /* Static sparkling hearts background */
+        .sparkle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998; /* Behind lock screen */
+            opacity: 0.3; /* Soft and dreamy */
+        }
+
+        .sparkle {
+            position: absolute;
+            font-size: 1.2rem;
+            color: #ff416c;
+        }
+
+        /* Lock Screen — matching your image */
+        .lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0); /* Soft pink gradient */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden; /* Prevent scroll */
+        }
+
+        /* Add tiny heart pattern as background */
+        .lock-screen::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='10' cy='10' r='2' fill='%23ffffff' opacity='0.6'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30,10 C40,10 50,20 50,30 C50,40 40,50 30,50 C20,50 10,40 10,30 C10,20 20,10 30,10 Z' fill='%23ffffff' opacity='0.3'/%3E%3C/svg%3E");
+            background-size: 40px 40px, 60px 60px;
+            background-position: 0 0, 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .lock-container {
+            text-align: center;
+            max-width: 320px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .lock-title {
+            font-size: 2rem;
+            color: #d32f2f;
+            margin-bottom: 20px;
+        }
+
+        .lock-code {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .lock-digit {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #e91e63;
+            border-radius: 10px;
+            background: white;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e91e63;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .lock-digit:hover {
+            background: #ffebee;
+        }
+
+        .lock-message {
+            font-size: 1rem;
+            color: #e91e63;
+            margin-top: 15px;
+            opacity: 0.8;
+        }
+
+        .lock-play-btn {
+            margin-top: 20px;
+            width: 80px;
+            height: 80px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .lock-play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .lock-play-btn svg {
+            width: 100%;
+            height: 100%;
+            fill: #ff416c;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -449,6 +571,26 @@
 </head>
 <body>
 
+    <!-- Lock Screen -->
+    <div class="lock-screen" id="lockScreen">
+        <div class="lock-container">
+            <h2 class="lock-title">🔒 Only for you</h2>
+            <p class="lock-message">Hint: Our first met</p>
+            
+            <div class="lock-code" id="lockCode">
+                <div class="lock-digit" data-index="0">_</div>
+                <div class="lock-digit" data-index="1">_</div>
+                <div class="lock-digit" data-index="2">_</div>
+                <div class="lock-digit" data-index="3">_</div>
+            </div>
+            
+            <button class="lock-play-btn" onclick="checkLock()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            </button>
+        </div>
+    </div>    
     
     <div class="container">
         <audio id="loveSong">
@@ -616,6 +758,19 @@
                 <p>Remember that first time we texted? My heart shook and whispered, <em>"That’s her."</em> Your eyes could power a thousand suns… but all I need is the way they light up my world. And your laugh? Bebe, it’s my favorite song on repeat.</p>                <p>I love the way you listen like every word matters. I love how your eyes sparkle when you talk about things you care about. I love your quiet strength, your gentle kindness, and the way you make even ordinary moments feel magical.</p>
                 <p>Being with you feels like coming home. You inspire me to dream bigger, love deeper, and be the kind of person worthy of someone as incredible as you.</p>
                 <p>So today, with all my heart, I’m asking… will you walk this path with me?</p>
+
+                <!-- Your romantic line -->
+                <p style="
+                    font-style: italic;
+                    color: #e91e63;
+                    margin-top: 20px;
+                    font-size: 1.25rem;
+                    text-align: center;
+                    line-height: 1.4;
+                ">
+                    I choose you — just as you are.
+                </p>
+
                 <div class="signature">Forever yours,<br>dhavarel</div>
             </div>
             <button class="btn btn-yes" onclick="showPage(4)">Next</button>
@@ -623,7 +778,7 @@
         
     <!-- Page 4: Final Proposal -->
     <div id="page4" class="page">
-        <h2>Stay with me farah?</h2>
+        <h2>Stay with me, Farah?</h2>
         <div class="proposal-text">Forever and always?</div>
         <div class="pulsing-heart">❤️</div>
         <div class="btn-container" id="finalBtnContainer">
@@ -654,6 +809,35 @@
     
     <script>
         
+        // Add floating hearts to lock screen
+        function addLockScreenHearts() {
+            const container = document.querySelector('.lock-screen');
+            const emojis = ['❤️', '🤍', '💕'];
+            
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                heart.style.position = 'absolute';
+                heart.style.fontSize = (Math.random() * 20 + 14) + 'px';
+                heart.style.color = '#ffffff';
+                heart.style.opacity = Math.random() * 0.5 + 0.3;
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.top = Math.random() * 100 + '%';
+                heart.style.pointerEvents = 'none';
+                heart.style.zIndex = '9998';
+                container.appendChild(heart);
+                
+                // Gentle fade-in effect
+                setTimeout(() => {
+                    heart.style.transition = 'opacity 1s ease';
+                    heart.style.opacity = 0.7;
+                }, 500);
+            }
+        }
+
+        // Start when page loads
+        addLockScreenHearts();
+
         function showPage(pageNumber) {
             // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
@@ -821,6 +1005,51 @@
                 }, duration);
             }
         }
+
+        let lockCode = ['_', '_', '_', '_']; // 4 digits now
+        const correctCode = ['2', '6', '1', '2']; // ← Change this to your 4-digit code!
+        const lockDigits = document.querySelectorAll('.lock-digit');
+
+        function updateLockDisplay() {
+            lockDigits.forEach((digit, i) => {
+                digit.textContent = lockCode[i] === '_' ? '_' : lockCode[i];
+            });
+        }
+
+        function checkLock() {
+            if (lockCode.join('') === correctCode.join('')) {
+                document.getElementById('lockScreen').style.display = 'none';
+                // Optional: play sound or confetti on unlock
+                createConfetti();
+            } else {
+                document.querySelector('.lock-message').textContent = "Wrong code... try again ❤️";
+                setTimeout(() => {
+                    document.querySelector('.lock-message').textContent = "Hint: Our first met";
+                }, 2000);
+            }
+        }
+
+        // Click to input digits
+        lockDigits.forEach(digit => {
+            digit.addEventListener('click', () => {
+                const index = parseInt(digit.dataset.index);
+                const current = lockCode[index];
+                
+                // Cycle: _ → 0 → 1 → ... → 9 → _
+                if (current === '_') {
+                    lockCode[index] = '0';
+                } else if (current === '9') {
+                    lockCode[index] = '_';
+                } else {
+                    lockCode[index] = (parseInt(current) + 1).toString();
+                }
+                
+                updateLockDisplay();
+            });
+        });
+
+    // Initialize display
+    updateLockDisplay();
 
     </script>
 </body>
