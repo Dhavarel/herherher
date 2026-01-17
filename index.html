@@ -808,35 +808,6 @@
     </div>
     
     <script>
-        
-        // Add floating hearts to lock screen
-        function addLockScreenHearts() {
-            const container = document.querySelector('.lock-screen');
-            const emojis = ['❤️', '🤍', '💕'];
-            
-            for (let i = 0; i < 8; i++) {
-                const heart = document.createElement('div');
-                heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-                heart.style.position = 'absolute';
-                heart.style.fontSize = (Math.random() * 20 + 14) + 'px';
-                heart.style.color = '#ffffff';
-                heart.style.opacity = Math.random() * 0.5 + 0.3;
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.top = Math.random() * 100 + '%';
-                heart.style.pointerEvents = 'none';
-                heart.style.zIndex = '9998';
-                container.appendChild(heart);
-                
-                // Gentle fade-in effect
-                setTimeout(() => {
-                    heart.style.transition = 'opacity 1s ease';
-                    heart.style.opacity = 0.7;
-                }, 500);
-            }
-        }
-
-        // Start when page loads
-        addLockScreenHearts();
 
         function showPage(pageNumber) {
             // Hide all pages
@@ -1055,3 +1026,4 @@
 </body>
 
 </html>
+
